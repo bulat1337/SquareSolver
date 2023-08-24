@@ -1,0 +1,7 @@
+.vscode/
+todo
+build/
+sq.dSYM/
+sq
+*.out
+

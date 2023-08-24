@@ -4,27 +4,39 @@
 #include <stdlib.h>
 #include <assert.h>
 
+// todo rename headers + place #include in header
 #include "structs.h"
 #include "solvers.h"
 #include "helpers.h"
 
+// struct EqResult {
+//  double x1;
+//  double x2;
+//  enum ASNWER_ID id;
+// };
+//
+// struct EqRes solve(const struct Coef* coef);
+
+// enum EQ_STATUS solve(const struct Coef* coef, struct EqResult* res);
+
 enum answer_identifier solve_equation(const struct coefs *mycoefs, double *x1, double *x2)
+// enum ANSWER_ID solve_equation(const struct coefs *mycoefs, double *x1, double *x2)
 {
-    assert(x1);
+    assert(x1 && "&x1 must not be NULL");
     assert(x2);
     assert(x1 != x2);
     assert(isfinite(mycoefs->a));
     assert(isfinite(mycoefs->b));
     assert(isfinite(mycoefs->c));
 
-    *x1 = 0;
-    *x2 = 0;
+    *x1 = NAN;
+    *x2 = NAN;
 
-    if(compare_doubles(mycoefs->a,0) == 0)
+    if (compare_doubles(mycoefs->a,0) == 0) // cmp_double
     {
-        if(compare_doubles(mycoefs->b,0) == 0)
+        if (compare_doubles(mycoefs->b,0) == 0)
         {
-            if(compare_doubles(mycoefs->c,0) == 0)
+            if (compare_doubles(mycoefs->c,0) == 0)
             {
                 return INF_ROOTS;   // a == 0, b == 0, c == 0
             }
@@ -35,6 +47,8 @@ enum answer_identifier solve_equation(const struct coefs *mycoefs, double *x1, d
         }
         else if(compare_doubles(mycoefs->c,0) == 0)
         {
+            *x1 = 0.0;
+
             return ONE_ROOT;  // a == 0, b != 0, c == 0
         }
         else
@@ -48,11 +62,14 @@ enum answer_identifier solve_equation(const struct coefs *mycoefs, double *x1, d
     {
         if(compare_doubles(mycoefs->b,0) == 0)
         {
+            *x1 = 0.0;
+
             return ONE_ROOT;  // a != 0, b == 0, c == 0
         }
         else
         {
             solve_linear(mycoefs->a, mycoefs->b, x1); // a != 0, b != 0, c == 0
+            *x2 = 0.0;
 
             return TWO_ROOTS;
         }
@@ -70,7 +87,7 @@ enum answer_identifier solve_quadratic(const struct coefs *mycoefs, double * x1,
 
     double discriminant = calculate_discriminant(mycoefs->a, mycoefs->b, mycoefs->c);
 
-    if(compare_doubles(discriminant,0) == 1)
+    if (compare_doubles(discriminant,0) == 1)
     {
         double sqofdis = sqrt(discriminant);
         *x1 = (-(mycoefs->b) + (sqofdis)) / (2 * mycoefs->a);
@@ -78,7 +95,7 @@ enum answer_identifier solve_quadratic(const struct coefs *mycoefs, double * x1,
 
         return TWO_ROOTS;
     }
-    else if(compare_doubles(discriminant,0) == 0)
+    else if (compare_doubles(discriminant,0) == 0) // todo: #define DBL_IS_ZERO(arg) ((bool) compare_doubles(arg,0))
     {
         *x1 = (-(mycoefs->b) + sqrt(discriminant)) / (2 * mycoefs->a);
 
@@ -92,7 +109,7 @@ enum answer_identifier solve_quadratic(const struct coefs *mycoefs, double * x1,
 
 void solve_linear(double b, double c, double *x1)
 {
-    assert(!compare_doubles(b,0));
+    assert(!(compare_doubles(b,0) == 0));
     assert(x1);
 
     *(x1) = -(c / b);

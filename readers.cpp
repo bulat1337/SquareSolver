@@ -5,8 +5,11 @@
 #include <assert.h>
 
 #include "readers.h"
-#include "helpers.h"
-#include "structs.h"
+// #include "solvers.h"
+
+
+// #include "helpers.h"
+// #include "structs.h"
 
 void read_coefs_stdin(struct coefs *mycoefs)
 {

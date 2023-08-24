@@ -1,6 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+// todo rename (equation_common.h)
+
 struct coefs
 {
     double a;
@@ -10,11 +12,12 @@ struct coefs
 
 enum answer_identifier
 {
-    TWO_ROOTS,
-    ONE_ROOT,
-    NO_ROOT,
-    IMPOSSIBLE_EQUATION,
-    INF_ROOTS
+    NONE = -1,
+    TWO_ROOTS = 2, // todo
+    ONE_ROOT = 1,
+    NO_ROOT = 0,
+    // IMPOSSIBLE_EQUATION,
+    INF_ROOTS = 8,
 };
 
 #endif
