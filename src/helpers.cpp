@@ -3,15 +3,14 @@
 
 #include "helpers.h"
 
-double calculate_discriminant(double a, double b, double c)
-{
-    return (b * b) - (4 * a * c);
-}
-
-int compare_doubles(double first_double, double second_double) // todo: isNan
+int cmp_double(double first_double, double second_double)
 {
     const double eps = 1e-7;
 
+    if(isnan(first_double) && isnan(second_double))
+    {
+        return 0;
+    }
     if (fabs(first_double - second_double) < eps)
     {
         return 0;

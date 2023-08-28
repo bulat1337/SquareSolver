@@ -3,24 +3,24 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "readers.h"
-// #include "solvers.h"
+#include "helpers.h"
 
-
-// #include "helpers.h"
-// #include "structs.h"
-
-void read_coefs_stdin(struct coefs *mycoefs)
+void read_coefs_stdin(struct Coefs *mycoefs, char *equation_type_ID)
 {
-    printf("To solve a solve_quadratic equation enter coefficient a:");
+    printf("Enter coefficient a:");
     read_coef(&(mycoefs->a));
 
     printf("coefficient b:");
     read_coef(&(mycoefs->b));
 
-    printf("and coefficient c:");
-    read_coef(&(mycoefs->c));
+    if(!strcmp(equation_type_ID,"quad"))
+    {
+        printf("and coefficient c:");
+        read_coef(&(mycoefs->c));
+    }
 }
 
 void read_coef(double *coef)

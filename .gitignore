@@ -4,4 +4,5 @@ build/
 sq.dSYM/
 sq
 *.out
-
+obj/
+.DS_Store
