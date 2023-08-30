@@ -8,6 +8,7 @@
 #include "printer.h"
 #include "test.h"
 #include "cmd_line_arg_based_actions.h"
+
 void action_according_to_cmd(struct Flag_IDs square_solver_IDs)
 {
 	char ans = 'n';

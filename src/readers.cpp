@@ -3,48 +3,50 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
 
 #include "readers.h"
 #include "helpers.h"
 
-void read_coefs_stdin(struct Coefs *mycoefs, char *equation_type_ID)
+void read_coefs_stdin(struct Coefs *current_coefs, int equation_type_ID)
 {
     printf("Enter coefficient a:");
-    read_coef(&(mycoefs->a));
+    read_coef(stdin, &(current_coefs->a));
 
     printf("coefficient b:");
-    read_coef(&(mycoefs->b));
+    read_coef(stdin, &(current_coefs->b));
 
-    if(!strcmp(equation_type_ID,"quad"))
+    if (equation_type_ID == 'q')
     {
         printf("and coefficient c:");
-        read_coef(&(mycoefs->c));
+        read_coef(stdin, &(current_coefs->c));
     }
 }
 
-void read_coef(double *coef)
+void read_coef(FILE* input_src, double *coef)
 {
     assert(coef);
 
-    bool flag = false;
-    while(flag == false)
+    while (true)
     {
-        while(scanf("%lf", coef) != true)
+        while(fscanf(input_src, "%lf", coef) != true)
         {
-            printf("Coefitient must be number.\n");
-            printf("Try again:");
+            fprintf(stderr,"Coefitient must be a single number.\n");
+            fprintf(stderr,"Try again:");
+
             clear_buffer();
         }
-        if(isspace(getchar()))
+
+        char next_sym = 0;
+        if (fscanf(input_src, "%c", &next_sym) != 1 || next_sym != '\n')
         {
-            flag = true;
+            fprintf(stderr,"Coefitient must be a single number.\n");
+            fprintf(stderr,"Try again:");
+			
+            clear_buffer();
         }
         else
         {
-            printf("Coefitient must be number.\n");
-            printf("Try again:");
-            clear_buffer();
+            break;
         }
     }
 }

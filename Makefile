@@ -21,11 +21,11 @@ LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,f
 SRS = $(wildcard $(PREF_SRS)*.cpp)
 OBJ = $(patsubst $(PREF_SRS)%.cpp, $(PREF_OBJ)%.o, $(SRS))
 
-$(TARGET)): $(OBJ)
-	$(CC) $(LINK_FLAGS) $(OBJ) -o $(TARGET)
+$(TARGET): $(OBJ)
+	@ $(CC) $(LINK_FLAGS) $(OBJ) -o $(TARGET)
 
 $(PREF_OBJ)%.o: $(PREF_SRS)%.cpp
-	$(CC) -c $< -o $@ $(FLAGS)
+	@ $(CC) -c $< -o $@ $(FLAGS)
 
 clean:
 	rm $(PREF_OBJ)*.o $(TARGET)

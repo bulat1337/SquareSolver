@@ -6,80 +6,78 @@
 #include "solvers.h"
 #include "helpers.h"
 
-#define DBL_IS_ZERO(d_arg) (bool)(cmp_double(d_arg,0) == 0)
-
-struct Equation_result solve_equation(const struct Coefs *mycoefs)
+struct Equation_result solve_equation(const struct Coefs *current_coefs)
 
 {
-    assert(mycoefs);
-    assert(isfinite(mycoefs->a));
-    assert(isfinite(mycoefs->b));
-    assert(isfinite(mycoefs->c));
+    assert(current_coefs);
+    assert(isfinite(current_coefs->a));
+    assert(isfinite(current_coefs->b));
+    assert(isfinite(current_coefs->c));
 
-    struct Equation_result my_equation_result =
+    struct Equation_result result =
     {
         .x1 = NAN,
         .x2 = NAN,
         .answer_identifier = NONE
     };
 
-    if (cmp_double(mycoefs->a,0) == 0)
+    if (cmp_double(current_coefs->a,0) == 0)
     {
-        if (cmp_double(mycoefs->b,0) == 0)
+        if (cmp_double(current_coefs->b,0) == 0)
         {
-            if (DBL_IS_ZERO(mycoefs->c))
+            if (DBL_IS_ZERO(current_coefs->c))
             {
-                my_equation_result.answer_identifier = INF_ROOTS;
+                result.answer_identifier = INF_ROOTS;
 
-                return my_equation_result;   // a == 0, b == 0, c == 0
+                return result;   // a == 0, b == 0, c == 0
             }
             else
             {
-                my_equation_result.answer_identifier = NO_ROOTS;
+                result.answer_identifier = NO_ROOTS;
 
-                return my_equation_result;    // a == 0, b == 0, c != 0
+                return result;    // a == 0, b == 0, c != 0
             }
         }
-        else if(DBL_IS_ZERO(mycoefs->c))
+        else if (DBL_IS_ZERO(current_coefs->c))
         {
-            my_equation_result.x1 = 0.0;
-            my_equation_result.answer_identifier = ONE_ROOT;
+            result.x1 = 0.0;
+            result.answer_identifier = ONE_ROOT;
 
-            return my_equation_result;  // a == 0, b != 0, c == 0
+            return result;  // a == 0, b != 0, c == 0
         }
         else
         {
-            my_equation_result = solve_linear(mycoefs->b, mycoefs->c);
-            my_equation_result.answer_identifier = ONE_ROOT;
+            result = solve_linear(current_coefs->b, current_coefs->c);
+            result.answer_identifier = ONE_ROOT;
 
-            return my_equation_result;   // a == 0, b != 0, c != 0
+            return result;   // a == 0, b != 0, c != 0
         }
     }
-    else if(DBL_IS_ZERO(mycoefs->c))
+    else if (DBL_IS_ZERO(current_coefs->c))
     {
-        if(DBL_IS_ZERO(mycoefs->b))
+        if (DBL_IS_ZERO(current_coefs->b))
         {
-            my_equation_result.x1 = 0.0;
-            my_equation_result.answer_identifier = ONE_ROOT;
+            result.x1 = 0.0;
+            result.answer_identifier = ONE_ROOT;
 
-            return my_equation_result;  // a != 0, b == 0, c == 0
+            return result;  // a != 0, b == 0, c == 0
         }
         else
         {
-            my_equation_result = solve_linear(mycoefs->a, mycoefs->b); // a != 0, b != 0, c == 0
-            my_equation_result.x2 = 0.0;
-            my_equation_result.answer_identifier = TWO_ROOTS;
+            result = solve_linear(current_coefs->a, current_coefs->b); // a != 0, b != 0, c == 0
+            result.x2 = 0.0;
+            result.answer_identifier = TWO_ROOTS;
 
-            return my_equation_result;
+            return result;
         }
     }
     else
     {
-        return solve_quadratic(mycoefs); // a != 0, c == 0
+        return solve_quadratic(current_coefs); // a != 0, c == 0
     }
 }
 
-struct Equation_result solve_quadratic(const struct Coefs *mycoefs)
+struct Equation_result solve_quadratic(const struct Coefs *current_coefs)
 {
     struct Equation_result quadratic_result =
     {
@@ -88,20 +86,20 @@ struct Equation_result solve_quadratic(const struct Coefs *mycoefs)
         .answer_identifier = NONE
     };
 
-    double discriminant = calculate_discriminant(mycoefs->a, mycoefs->b, mycoefs->c);
+    double discriminant = calculate_discriminant(current_coefs);
 
     if (cmp_double(discriminant,0) == 1)
     {
         double sq_of_dis = sqrt(discriminant);
-        quadratic_result.x1 = (-(mycoefs->b) + (sq_of_dis)) / (2 * mycoefs->a);
-        quadratic_result.x2 = (-(mycoefs->b) - (sq_of_dis)) / (2 * mycoefs->a);
+        quadratic_result.x1 = (-(current_coefs->b) + (sq_of_dis)) / (2 * current_coefs->a);
+        quadratic_result.x2 = (-(current_coefs->b) - (sq_of_dis)) / (2 * current_coefs->a);
         quadratic_result.answer_identifier = TWO_ROOTS;
 
         return quadratic_result;
     }
     else if (DBL_IS_ZERO(discriminant))
     {
-        quadratic_result.x1 = (-(mycoefs->b) + sqrt(discriminant)) / (2 * mycoefs->a);
+        quadratic_result.x1 = (-(current_coefs->b) + sqrt(discriminant)) / (2 * current_coefs->a);
         quadratic_result.answer_identifier = ONE_ROOT;
 
         return quadratic_result;
@@ -122,9 +120,9 @@ struct Equation_result solve_linear(double b, double c)
         .x2 = NAN
     };
 
-    if(DBL_IS_ZERO(b))
+    if (DBL_IS_ZERO(b))
     {
-        if(DBL_IS_ZERO(c))
+        if (DBL_IS_ZERO(c))
         {
             linear_result.answer_identifier = INF_ROOTS;
 
@@ -139,7 +137,7 @@ struct Equation_result solve_linear(double b, double c)
     }
     else
     {
-        if(DBL_IS_ZERO(c))
+        if (DBL_IS_ZERO(c))
         {
             linear_result.x1 = 0.0;
             linear_result.answer_identifier = ONE_ROOT;
@@ -156,7 +154,7 @@ struct Equation_result solve_linear(double b, double c)
     }
 }
 
-double calculate_discriminant(double a, double b, double c)
+double calculate_discriminant(const struct Coefs *current_coefs)
 {
-    return (b * b) - (4 * a * c);
+    return (current_coefs->b * current_coefs->b) - (4 * current_coefs->a * current_coefs->c);
 }
